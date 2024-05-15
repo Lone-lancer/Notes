@@ -33,6 +33,16 @@ public class Note implements Serializable {
     @ColumnInfo(name = "web_link")
     private String weblink;
 
+    @ColumnInfo(name = "date_picker")
+    private String date;
+
+    public String getDate() {
+        return date;
+    }
+
+    public void setDate(String date) {
+        this.date = date;
+    }
 
     public int getId() {
         return id;
@@ -97,6 +107,8 @@ public class Note implements Serializable {
     public void setWeblink(String weblink) {
         this.weblink = weblink;
     }
+
+
 
     @NonNull
     @Override
