@@ -7,7 +7,6 @@
     android:layout_height="match_parent"
     android:background="@color/colorPrimary"
     tools:context=".activities.MainActivity">
-
     <TextView
         android:id="@+id/textMyNotes"
         android:layout_width="match_parent"
@@ -21,6 +20,18 @@
         android:textColor="@color/colorWhite"
         android:textSize="@dimen/_20sdp"
         app:layout_constraintTop_toTopOf="parent"/>
+    <Spinner
+        android:id="@+id/languageSpinner"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/_20sdp"
+        android:layout_marginEnd="@dimen/_12sdp"
+        android:fontFamily="@font/ubuntu_bold"
+        android:backgroundTint="@color/colorWhite"
+        android:entries="@array/language_array"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
 
     <LinearLayout
         android:id="@+id/layoutSearch"
@@ -112,7 +123,10 @@
             android:src="@drawable/ic_calander"
             android:contentDescription="@string/app_name"
             android:layout_marginStart="@dimen/_15sdp"/>
+
+
     </LinearLayout>
+
     <ImageView
         android:id="@+id/imageAddNoteMain"
         android:layout_width="@dimen/_40sdp"

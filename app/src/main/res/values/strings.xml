@@ -6,4 +6,8 @@
     <string name="note_subtitle">Note Subtitle</string>
     <string name="type_note_here">Type note here…</string>
     <string name="calendar_icon" />
+    <string-array name="language_array">
+        <item>English</item>
+        <item>Amharic</item>
+    </string-array>
 </resources>

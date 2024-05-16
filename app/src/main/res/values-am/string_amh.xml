@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">ምሳሌ</string>
+    <string name="my_notes">የእኔ  ማስታወሻ</string>
+    <string name="search_notes">ማስታወሻ ፈልግ</string>
+    <string name="note_title">የማስታወሻ ርዕስ</string>
+    <string name="note_subtitle">የማስታወሻ መግለጪያ</string>
+    <string name="type_note_here">ማስታወሻ ያእግቡ</string>
+    <string name="calendar_icon">ቀን</string>
+    <string-array name="language_array">
+        <item>እንግሊዝኛ</item>
+        <item>አማርኛ</item>
+    </string-array>
+</resources>

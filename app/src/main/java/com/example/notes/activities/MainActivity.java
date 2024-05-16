@@ -1,17 +1,28 @@
 package com.example.notes.activities;
 
+import static android.media.MediaFormat.KEY_LANGUAGE;
+
 import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.CalendarView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.Spinner;
+import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -27,6 +38,7 @@ import com.example.notes.entities.Note;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Calendar;
+import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -37,7 +49,9 @@ public class MainActivity extends AppCompatActivity {
     private RecyclerView notesRecyclerView;
     private long selectedDate;
     private List<Note> noteList;
-    private NotesAdapter notesAdapter:
+    private NotesAdapter notesAdapter;
+    private Spinner languageSpinner;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,21 +62,40 @@ public class MainActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+
+        setAppLanguage("English"); // or "Amharic"
         notesRecyclerView = findViewById(R.id.notesRecyclerView);
         notesRecyclerView.setLayoutManager(
                 new StaggeredGridLayoutManager(2,StaggeredGridLayoutManager.VERTICAL)
         );
 
-        noteList = new ArrayList<>():
+        noteList = new ArrayList<>();
         notesAdapter = new NotesAdapter(noteList);
         notesRecyclerView.setAdapter(notesAdapter);
 
         ImageView imageAddNoteMain = findViewById(R.id.imageAddNoteMain);
-        imageAddNoteMain.setOnClickListener(v -> startActivityForResult(new Intent(getApplicationContext(), CreateNoteActivity.class), REQUEST_CODE_ADD_NOTE));
+        imageAddNoteMain.setOnClickListener(v ->{
+                startActivityForResult(
+                        new Intent(getApplicationContext(), CreateNoteActivity.class),
+                        REQUEST_CODE_ADD_NOTE
+                );
+        });
 
         calendarIcon = findViewById(R.id.calendarIcon);
         calendarIcon.setOnClickListener(v -> showDatePickerDialog());
+        languageSpinner = findViewById(R.id.languageSpinner);
+        languageSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                String selectedLanguage = parent.getItemAtPosition(position).toString();
+                setAppLanguage(selectedLanguage);
+            }
 
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                // Do nothing
+            }
+        });
         getNotes();
     }
 
@@ -96,11 +129,59 @@ public class MainActivity extends AppCompatActivity {
             @Override
             protected void onPostExecute(List<Note> notes) {
                 super.onPostExecute(notes);
-                Log.d("MY_NOTES", notes.toString());
+                if(noteList.size()==0)
+                {
+                    noteList.addAll((notes));
+                    notesAdapter.notifyDataSetChanged();
+                }
+                else {
+                    noteList.add(0,notes.get(0));
+                    notesAdapter.notifyItemInserted(0);
+                }
+                notesRecyclerView.smoothScrollToPosition(0);
             }
 
         }
         new GetNotesTask().execute();
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_CODE_ADD_NOTE && resultCode == RESULT_OK)
+        {
+            getNotes();
+        }
+
+    }
+    private void setAppLanguage(String language) {
+        Locale locale;
+        switch (language) {
+            case "English":
+                locale = Locale.ENGLISH;
+                break;
+            case "Amharic":
+                locale = new Locale("am");
+                break;
+            default:
+                locale = Locale.getDefault();
+        }
+        Locale.setDefault(locale);
+        Resources resources = getResources();
+        Configuration configuration = resources.getConfiguration();
+        configuration.setLocale(locale);
+        resources.updateConfiguration(configuration, resources.getDisplayMetrics());
+        updateViews();
+    }
+
+    private void updateViews() {
+        // Update the UI elements with the new language
+        // You may need to update specific UI elements here
+        // For example:
+        TextView textView = findViewById(R.id.textMyNotes);
+        textView.setText(R.string.my_notes);
+        TextView textView1 = findViewById(R.id.inputSearch);
+        textView1.setHint(R.string.search_notes);
+        // Update other UI elements as needed
+    }
 }
